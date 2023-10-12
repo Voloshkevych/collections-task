@@ -3,6 +3,7 @@ package co.inventorsoft.academy.collections.model;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -18,18 +19,38 @@ public class Range<T extends Comparable<T>> implements Set<T> {
 
     // method to create a Range object with start and end points
     public static <T extends Comparable<T>> Range<T> of(T start, T end) {
+        Objects.requireNonNull(start, "Start value must not be null");
+        Objects.requireNonNull(end, "End value must not be null");
         return new Range<>(start, end);
     }
 
     // method to create a Range object with custom function for incrementation
     public static <T extends Comparable<T>> Range<T> of(T start, T end, Function<T, T> function) {
+        Objects.requireNonNull(start, "Start value must not be null");
+        Objects.requireNonNull(end, "End value must not be null");
+        Objects.requireNonNull(function, "Function must not be null");
         return new Range<>(start, end, function);
     }
 
     private Range(T start, T end) {
         this.start = start;
         this.end = end;
-        this.function = null;
+        this.function = elem -> {
+            Number num = (Number) elem;
+            if (elem instanceof Double) {
+                return (T) Double.valueOf(num.doubleValue() + 0.1d);
+            } else if (elem instanceof Float) {
+                return (T) Float.valueOf(num.floatValue() + 0.1f);
+            } else if (elem instanceof Long) {
+                return (T) Long.valueOf(num.longValue() + 1);
+            } else if (elem instanceof Integer) {
+                return (T) Integer.valueOf(num.intValue() + 1);
+            } else if (elem instanceof Short) {
+                return (T) Short.valueOf((short) (num.shortValue() + 1));
+            } else {
+                return (T) Byte.valueOf((byte) (num.byteValue() + 1));
+            }
+        };
     }
 
     private Range(T start, T end, Function function) {
@@ -76,47 +97,30 @@ public class Range<T extends Comparable<T>> implements Set<T> {
                 }
 
                 T result = current;
-                current = function != null ? function.apply(current) : (T) increaseDefault(current);
+                current = Range.this.function.apply(current);
                 return result;
-            }
-
-            private T increaseDefault(T elem) {
-                Number num = (Number) elem;
-                if (elem instanceof Double) {
-                    return (T) Double.valueOf(num.doubleValue() + 0.1d);
-                } else if (elem instanceof Float) {
-                    return (T) Float.valueOf(num.floatValue() + 0.1f);
-                } else if (elem instanceof Long) {
-                    return (T) Long.valueOf(num.longValue() + 1);
-                } else if (elem instanceof Integer) {
-                    return (T) Integer.valueOf(num.intValue() + 1);
-                } else if (elem instanceof Short) {
-                    return (T) Short.valueOf((short) (num.shortValue() + 1));
-                } else {
-                    return (T) Byte.valueOf((byte) (num.byteValue() + 1));
-                }
             }
         };
     }
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        throw new UnsupportedOperationException("toArray operation is not supported for Range");
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        throw new UnsupportedOperationException("toArray operation is not supported for Range");
     }
 
     @Override
     public boolean add(T t) {
-        return false;
+        throw new UnsupportedOperationException("add operation is not supported for Range");
     }
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        throw new UnsupportedOperationException("remove operation is not supported for Range");
     }
 
     public boolean containsAll(Collection<?> c) {
@@ -130,22 +134,22 @@ public class Range<T extends Comparable<T>> implements Set<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return false;
+        throw new UnsupportedOperationException("addAll operation is not supported for Range");
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return false;
+        throw new UnsupportedOperationException("retainAll operation is not supported for Range");
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return false;
+        throw new UnsupportedOperationException("removeAll operation is not supported for Range");
     }
 
     @Override
     public void clear() {
-
+        throw new UnsupportedOperationException("clear operation is not supported for Range");
     }
 
 }
